@@ -36,4 +36,4 @@ SELECT 'ATS_PAGAMENTO', COUNT(*) FROM ats_pagamento UNION ALL
 SELECT 'ATS_ENTREGA', COUNT(*) FROM ats_entrega;
 ```
 
-Resultado obtido: `4, 5, 4, 6, 4, 5, 2, 2`, respectivamente. Os 40 testes usam `SAVEPOINT` e `ROLLBACK TO SAVEPOINT`; por isso, não alteram esse povoamento.
+Resultado obtido: `4, 5, 4, 6, 4, 5, 2, 2`, respectivamente. Os 41 testes usam `SAVEPOINT` e `ROLLBACK TO SAVEPOINT`; por isso, não alteram esse povoamento.

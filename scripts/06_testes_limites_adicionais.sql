@@ -1,5 +1,5 @@
 -- Arquivo: 06_testes_limites_adicionais.sql
--- Finalidade: executar os CT33 a CT40, completando 40 casos com pares de valores nas fronteiras superiores e inferiores.
+-- Finalidade: executar os CT33 a CT41, completando 41 casos com valores nas fronteiras superiores e inferiores.
 -- Uso: cada CT cria um SAVEPOINT e desfaz a tentativa, preservando a massa de dados original.
 
 SET SERVEROUTPUT ON SIZE UNLIMITED
@@ -119,3 +119,15 @@ EXCEPTION WHEN OTHERS THEN
 END;
 /
 ROLLBACK TO ct40;
+
+-- CT41: estoque igual a zero, limite inferior valido do atributo (preco valido isolado para testar apenas o estoque).
+SAVEPOINT ct41;
+BEGIN
+  INSERT INTO ats_produto (produto_id, categoria_id, sku, nome, preco, estoque, ativo)
+  VALUES (9941, 201, 'CT41-SKU', 'Produto Estoque Zero', 10, 0, 'S');
+  DBMS_OUTPUT.PUT_LINE('CT41|OK|Estoque zero aceito no limite inferior valido.');
+EXCEPTION WHEN OTHERS THEN
+  DBMS_OUTPUT.PUT_LINE('CT41|ERRO|' || SQLERRM);
+END;
+/
+ROLLBACK TO ct41;

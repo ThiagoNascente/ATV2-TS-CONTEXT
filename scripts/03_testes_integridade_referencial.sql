@@ -8,6 +8,7 @@ SET FEEDBACK OFF
 
 PROMPT GRUPO|Integridade referencial
 
+-- CT01: endereco com cliente inexistente deve ser rejeitado pela chave estrangeira.
 SAVEPOINT ct01;
 BEGIN
   INSERT INTO ats_endereco (endereco_id, cliente_id, tipo_endereco, logradouro, numero, cep, cidade, uf)
@@ -23,6 +24,7 @@ END;
 /
 ROLLBACK TO ct01;
 
+-- CT02: produto com categoria inexistente deve ser rejeitado pela chave estrangeira.
 SAVEPOINT ct02;
 BEGIN
   INSERT INTO ats_produto (produto_id, categoria_id, sku, nome, preco, estoque, ativo)
@@ -38,6 +40,7 @@ END;
 /
 ROLLBACK TO ct02;
 
+-- CT03: pedido com endereco de outro cliente deve ser rejeitado pela chave estrangeira composta.
 SAVEPOINT ct03;
 BEGIN
   INSERT INTO ats_pedido (pedido_id, cliente_id, endereco_id, status_pedido, valor_total)
@@ -53,6 +56,7 @@ END;
 /
 ROLLBACK TO ct03;
 
+-- CT04: exclusao de categoria referenciada por produtos deve ser bloqueada.
 SAVEPOINT ct04;
 BEGIN
   DELETE FROM ats_categoria WHERE categoria_id = 201;
@@ -67,6 +71,7 @@ END;
 /
 ROLLBACK TO ct04;
 
+-- CT05: item com pedido inexistente deve ser rejeitado pela chave estrangeira.
 SAVEPOINT ct05;
 BEGIN
   INSERT INTO ats_item_pedido (pedido_id, produto_id, quantidade, preco_unitario, desconto_percentual)
@@ -82,6 +87,7 @@ END;
 /
 ROLLBACK TO ct05;
 
+-- CT06: item com produto inexistente deve ser rejeitado pela chave estrangeira.
 SAVEPOINT ct06;
 BEGIN
   INSERT INTO ats_item_pedido (pedido_id, produto_id, quantidade, preco_unitario, desconto_percentual)
@@ -97,6 +103,7 @@ END;
 /
 ROLLBACK TO ct06;
 
+-- CT07: pagamento com pedido inexistente deve ser rejeitado pela chave estrangeira.
 SAVEPOINT ct07;
 BEGIN
   INSERT INTO ats_pagamento (pagamento_id, pedido_id, forma_pagamento, valor, parcelas, status_pagamento)
@@ -112,6 +119,7 @@ END;
 /
 ROLLBACK TO ct07;
 
+-- CT08: entrega com pedido inexistente deve ser rejeitada pela chave estrangeira.
 SAVEPOINT ct08;
 BEGIN
   INSERT INTO ats_entrega (entrega_id, pedido_id, transportadora, status_entrega)

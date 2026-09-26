@@ -8,6 +8,7 @@ SET FEEDBACK OFF
 
 PROMPT GRUPO|Integridade semantica, unicidade e dependencia de dados
 
+-- CT25: pagamento divergente do total do pedido deve ser rejeitado.
 SAVEPOINT ct25;
 BEGIN
   INSERT INTO ats_pagamento (pagamento_id, pedido_id, forma_pagamento, valor, parcelas, status_pagamento)
@@ -23,6 +24,7 @@ END;
 /
 ROLLBACK TO ct25;
 
+-- CT26: pagamento igual ao total do pedido, caso valido da dependencia.
 SAVEPOINT ct26;
 BEGIN
   INSERT INTO ats_pagamento (pagamento_id, pedido_id, forma_pagamento, valor, parcelas, status_pagamento)
@@ -34,6 +36,7 @@ END;
 /
 ROLLBACK TO ct26;
 
+-- CT27: data prevista anterior ao envio deve ser rejeitada.
 SAVEPOINT ct27;
 BEGIN
   INSERT INTO ats_entrega (entrega_id, pedido_id, transportadora, status_entrega, data_envio, data_prevista)
@@ -49,6 +52,7 @@ END;
 /
 ROLLBACK TO ct27;
 
+-- CT28: data de entrega anterior ao envio deve ser rejeitada.
 SAVEPOINT ct28;
 BEGIN
   INSERT INTO ats_entrega (entrega_id, pedido_id, transportadora, status_entrega, data_envio, data_prevista, data_entrega)
@@ -64,6 +68,7 @@ END;
 /
 ROLLBACK TO ct28;
 
+-- CT29: email duplicado deve ser rejeitado pela unicidade.
 SAVEPOINT ct29;
 BEGIN
   INSERT INTO ats_cliente (cliente_id, nome, email, data_nascimento, status_cliente)
@@ -79,6 +84,7 @@ END;
 /
 ROLLBACK TO ct29;
 
+-- CT30: segundo pagamento para o mesmo pedido deve ser rejeitado pela unicidade.
 SAVEPOINT ct30;
 BEGIN
   INSERT INTO ats_pagamento (pagamento_id, pedido_id, forma_pagamento, valor, parcelas, status_pagamento)
@@ -94,6 +100,7 @@ END;
 /
 ROLLBACK TO ct30;
 
+-- CT31: exclusao de cliente com dependencias deve ser bloqueada.
 SAVEPOINT ct31;
 BEGIN
   DELETE FROM ats_cliente WHERE cliente_id = 1;
@@ -108,6 +115,7 @@ END;
 /
 ROLLBACK TO ct31;
 
+-- CT32: valor total do pedido negativo deve ser rejeitado.
 SAVEPOINT ct32;
 BEGIN
   INSERT INTO ats_pedido (pedido_id, cliente_id, endereco_id, status_pedido, valor_total)
