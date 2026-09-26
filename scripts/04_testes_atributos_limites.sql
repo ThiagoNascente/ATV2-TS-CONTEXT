@@ -8,6 +8,7 @@ SET FEEDBACK OFF
 
 PROMPT GRUPO|Integridade de atributos, classes de equivalencia e valores-limite
 
+-- CT09: nome nulo deve ser rejeitado por campo obrigatorio.
 SAVEPOINT ct09;
 BEGIN
   INSERT INTO ats_cliente (cliente_id, nome, email, data_nascimento, status_cliente)
@@ -23,6 +24,7 @@ END;
 /
 ROLLBACK TO ct09;
 
+-- CT10: data de nascimento em 1900-01-01, limite inferior valido.
 SAVEPOINT ct10;
 BEGIN
   INSERT INTO ats_cliente (cliente_id, nome, email, data_nascimento, status_cliente)
@@ -34,6 +36,7 @@ END;
 /
 ROLLBACK TO ct10;
 
+-- CT11: data de nascimento em 1899-12-31, abaixo do limite inferior.
 SAVEPOINT ct11;
 BEGIN
   INSERT INTO ats_cliente (cliente_id, nome, email, data_nascimento, status_cliente)
@@ -49,6 +52,7 @@ END;
 /
 ROLLBACK TO ct11;
 
+-- CT12: nascimento em 2008-09-27, um dia abaixo dos 18 anos exigidos.
 SAVEPOINT ct12;
 BEGIN
   INSERT INTO ats_cliente (cliente_id, nome, email, data_nascimento, status_cliente)
@@ -64,6 +68,7 @@ END;
 /
 ROLLBACK TO ct12;
 
+-- CT13: CEP com 7 digitos, abaixo do comprimento exigido de 8.
 SAVEPOINT ct13;
 BEGIN
   INSERT INTO ats_endereco (endereco_id, cliente_id, tipo_endereco, logradouro, numero, cep, cidade, uf)
@@ -79,6 +84,7 @@ END;
 /
 ROLLBACK TO ct13;
 
+-- CT14: numero de endereco igual a 1, limite inferior valido.
 SAVEPOINT ct14;
 BEGIN
   INSERT INTO ats_endereco (endereco_id, cliente_id, tipo_endereco, logradouro, numero, cep, cidade, uf)
@@ -90,6 +96,7 @@ END;
 /
 ROLLBACK TO ct14;
 
+-- CT15: preco zero, um centavo abaixo do limite inferior.
 SAVEPOINT ct15;
 BEGIN
   INSERT INTO ats_produto (produto_id, categoria_id, sku, nome, preco, estoque, ativo)
@@ -105,17 +112,19 @@ END;
 /
 ROLLBACK TO ct15;
 
+-- CT16: preco 0,01, limite inferior valido (estoque valido isolado para testar apenas o preco).
 SAVEPOINT ct16;
 BEGIN
   INSERT INTO ats_produto (produto_id, categoria_id, sku, nome, preco, estoque, ativo)
-  VALUES (9916, 201, 'CT16-SKU', 'Produto Limite', 0.01, 0, 'S');
-  DBMS_OUTPUT.PUT_LINE('CT16|OK|Preco 0,01 e estoque zero aceitos nos limites validos.');
+  VALUES (9916, 201, 'CT16-SKU', 'Produto Limite', 0.01, 1, 'S');
+  DBMS_OUTPUT.PUT_LINE('CT16|OK|Preco 0,01 aceito no limite inferior valido.');
 EXCEPTION WHEN OTHERS THEN
   DBMS_OUTPUT.PUT_LINE('CT16|ERRO|' || SQLERRM);
 END;
 /
 ROLLBACK TO ct16;
 
+-- CT17: estoque -1, uma unidade abaixo do limite inferior.
 SAVEPOINT ct17;
 BEGIN
   INSERT INTO ats_produto (produto_id, categoria_id, sku, nome, preco, estoque, ativo)
@@ -131,6 +140,7 @@ END;
 /
 ROLLBACK TO ct17;
 
+-- CT18: quantidade zero, uma unidade abaixo do limite inferior.
 SAVEPOINT ct18;
 BEGIN
   INSERT INTO ats_item_pedido (pedido_id, produto_id, quantidade, preco_unitario, desconto_percentual)
@@ -146,6 +156,7 @@ END;
 /
 ROLLBACK TO ct18;
 
+-- CT19: quantidade 1, limite inferior valido.
 SAVEPOINT ct19;
 BEGIN
   INSERT INTO ats_item_pedido (pedido_id, produto_id, quantidade, preco_unitario, desconto_percentual)
@@ -157,6 +168,7 @@ END;
 /
 ROLLBACK TO ct19;
 
+-- CT20: desconto 100 por cento, limite superior valido.
 SAVEPOINT ct20;
 BEGIN
   INSERT INTO ats_item_pedido (pedido_id, produto_id, quantidade, preco_unitario, desconto_percentual)
@@ -168,6 +180,7 @@ END;
 /
 ROLLBACK TO ct20;
 
+-- CT21: desconto 100,01, um centesimo acima do limite superior.
 SAVEPOINT ct21;
 BEGIN
   INSERT INTO ats_item_pedido (pedido_id, produto_id, quantidade, preco_unitario, desconto_percentual)
@@ -183,6 +196,7 @@ END;
 /
 ROLLBACK TO ct21;
 
+-- CT22: 13 parcelas, uma acima do limite superior.
 SAVEPOINT ct22;
 BEGIN
   INSERT INTO ats_pagamento (pagamento_id, pedido_id, forma_pagamento, valor, parcelas, status_pagamento)
@@ -198,6 +212,7 @@ END;
 /
 ROLLBACK TO ct22;
 
+-- CT23: status ENTREGUE sem data de entrega, combinacao inconsistente.
 SAVEPOINT ct23;
 BEGIN
   INSERT INTO ats_entrega (entrega_id, pedido_id, transportadora, status_entrega, data_envio, data_prevista, data_entrega)
@@ -213,6 +228,7 @@ END;
 /
 ROLLBACK TO ct23;
 
+-- CT24: ativo de categoria igual a 'X', fora do dominio S/N.
 SAVEPOINT ct24;
 BEGIN
   INSERT INTO ats_categoria (categoria_id, nome, descricao, ativo)

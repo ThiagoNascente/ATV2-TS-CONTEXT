@@ -1,5 +1,5 @@
 -- Arquivo: 07_executar_todos_testes.sql
--- Finalidade: executar os 40 casos de teste em sequência e registrar o resultado consolidado.
+-- Finalidade: executar os 41 casos de teste em sequência e registrar o resultado consolidado.
 -- Uso: executar no SQL*Plus após a criação e o povoamento; a evidência é gravada em resultados-testes.txt.
 
 SET TERMOUT ON
